@@ -1,7 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductGalleryController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,4 +16,18 @@ use App\Http\Controllers\DashboardController;
 |
 */
 
-Route::get('/', [DashboardController::class, 'index']);
+// Route::get('/', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth'])->name('dashboard');
+
+Route::middleware('auth')->group(function(){
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+Route::get('products/{id}/gallery', [ProductController::class, 'gallery'])->name('products.gallery');
+Route::resource('products', ProductController::class);
+Route::resource('product-galleries', ProductGalleryController::class);
+
+require __DIR__.'/auth.php';
