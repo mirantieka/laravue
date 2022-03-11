@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\CheckoutController;
+use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +16,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/', function (Request $request) {
     return $request->user();
 });
+
+Route::get('products', [ProductController::class, 'all']);
+Route::post('checkout', [CheckoutController::class, 'checkout']);
+Route::get('transaction/{id}', [TransactionController::class, 'get']);
