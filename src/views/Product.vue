@@ -25,12 +25,13 @@
             <div class="row">
               <div class="col-lg-6">
                 <div class="product-pic-zoom">
+                  <!-- <p :src="id"></p> -->
                   <img class="product-big-img" :src="image_default" alt="" />
                 </div>
                 <div class="product-thumbs">
                   <carousel class="product-thumbs-track ps-slider" :dots="false" :nav="false">
                     <div class="pt" @click="changeImage(thumbs[0])" :class="thumbs[0] == image_default ? 'active' : '' ">
-                      <img src="img/mickey1.jpg" alt="" />
+                      <img v-bind:src="productDetails.galleries[0].photo" alt="" />
                     </div>
 
                     <div class="pt" @click="changeImage(thumbs[1])" :class="thumbs[1] == image_default ? 'active' : '' ">
@@ -50,8 +51,8 @@
               <div class="col-lg-6">
                 <div class="product-details">
                   <div class="pd-title">
-                    <span>oranges</span>
-                    <h3>Pure Pineapple</h3>
+                    <span>{{productDetails.type}}</span>
+                    <h3>{{productDetails.name}}</h3>
                   </div>
                   <div class="pd-desc">
                     <p>
@@ -104,7 +105,7 @@ import MainHeader from "../components/MainHeader.vue";
 import MainFooter from "../components/MainFooter.vue";
 import carousel from 'vue-owl-carousel';
 import RelatedProduct from '../components/RelatedProduct.vue';
-
+import axios from 'axios';
 
 export default {
   name: "Product",
@@ -123,14 +124,25 @@ export default {
         "img/mickey2.jpg",
         "img/mickey3.jpg",
         "img/mickey4.jpg"
-      ]
+      ],
+      productDetails: []
     }
   },
   methods:{
     changeImage(imageUrl) {
       this.image_default = imageUrl;
     }
-  }
+  },
+  mounted() {
+    axios
+      .get("http://127.0.0.1:8000/api/products",{
+        params: {
+          id: this.$route.params.id
+        }
+      })
+      .then((res) => (this.productDetails = res.data.data))
+      .catch((err) => console.log(err));
+  },
 };
 </script>
 
