@@ -11,7 +11,7 @@
                   <img v-bind:src="itemProduct.galleries[0].photo" alt="" />
                   <ul>
                     <li class="w-icon active">
-                      <a href="#"><i class="icon_bag_alt"></i></a>
+                      <a @click="saveCart(itemProduct.id, itemProduct.name, itemProduct.price, itemProduct.galleries[0].photo)" href="#"><i class="icon_bag_alt"></i></a>
                     </li>
                     <li class="quick-view">
                       <router-link v-bind:to="'/product/'+itemProduct.id">+ Quick View</router-link>
@@ -52,9 +52,32 @@ export default {
   data() {
     return {
       products: [],
+      cartProduct: []
     };
   },
+  methods: {
+    saveCart(idProduct, nameProduct, priceProduct, photoProduct) {
+
+      var productStored = {
+        "id": idProduct,
+        "name": nameProduct,
+        "price": priceProduct,
+        "photo": photoProduct,
+      }
+
+      this.cartProduct.push(productStored);
+      const parsed = JSON.stringify(this.cartProduct);
+      localStorage.setItem('cartProduct', parsed);
+    }
+  },
   mounted() {
+    if (localStorage.getItem('cartProduct')) {
+      try {
+        this.cartProduct = JSON.parse(localStorage.getItem('cartProduct'));
+      } catch(e) {
+        localStorage.removeItem('cartProduct');
+      }
+    }
     axios
       .get("http://127.0.0.1:8000/api/products")
       .then((res) => (this.products = res.data.data.data))
