@@ -55,7 +55,7 @@
                               </div>
                             </td>
                             <td
-                              @click="removeItem(cartProduct.index)"
+                              @click="removeItem(cartProduct.id)"
                               class="si-close"
                             >
                               <i class="ti-close"></i>
@@ -102,10 +102,16 @@ export default {
     };
   },
   methods: {
-    removeItem(index) {
+    removeItem(idx) {
+      let cartUserStorage = JSON.parse(localStorage.getItem("cartProduct"));
+      let itemCartUserStorage = cartUserStorage.map(itemCartUserStorage => itemCartUserStorage.id);
+
+      let index = itemCartUserStorage.findIndex(id => id == idx);
       this.cartProduct.splice(index, 1);
+      
       const parsed = JSON.stringify(this.cartProduct);
       localStorage.setItem("cartProduct", parsed);
+      window.location.reload();
     },
   },
   mounted() {

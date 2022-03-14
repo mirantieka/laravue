@@ -68,6 +68,8 @@ export default {
       this.cartProduct.push(productStored);
       const parsed = JSON.stringify(this.cartProduct);
       localStorage.setItem('cartProduct', parsed);
+
+      window.location.reload();
     }
   },
   mounted() {
