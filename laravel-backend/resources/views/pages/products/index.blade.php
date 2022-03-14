@@ -16,7 +16,7 @@
                                     <th>#</th>
                                     <th>Name</th>
                                     <th>Type</th>
-                                    <th>Description</th>
+                                    <th style="width: 37%;">Description</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
                                     <th>Action</th>
