@@ -29,40 +29,43 @@
               <ul class="nav-right">
                 <li class="cart-icon">
                   Keranjang Belanja &nbsp;
-                  <a href="#">
+                  <a href="#" v-if="cartProduct.length > 0">
                     <i class="icon_bag_alt"></i>
-                    <span>3</span>
+                    <span>{{ cartProduct.length }}</span>
+                  </a>
+                  <a href="#" v-else>
+                    <i class="icon_bag_alt"></i>
                   </a>
                   <div class="cart-hover">
                     <div class="select-items">
                       <table>
-                        <tbody>
-                          <tr>
+                        <tbody v-if="cartProduct.length > 0">
+                          <tr v-for="cart in cartProduct" :key="cart.id">
                             <td class="si-pic">
-                              <img src="img/select-product-1.jpg" alt="" />
+                              <img
+                                class="photo-item"
+                                v-bind:src="cart.photo"
+                                alt=""
+                              />
                             </td>
                             <td class="si-text">
                               <div class="product-selected">
-                                <p>$60.00 x 1</p>
-                                <h6>Kabino Bedside Table</h6>
+                                <p>${{ cart.price }} x 1</p>
+                                <h6>{{ cart.name }}</h6>
                               </div>
                             </td>
-                            <td class="si-close">
+                            <td
+                              @click="removeItem(cartProduct.index)"
+                              class="si-close"
+                            >
                               <i class="ti-close"></i>
                             </td>
                           </tr>
+                        </tbody>
+                        <tbody v-else>
                           <tr>
-                            <td class="si-pic">
-                              <img src="img/select-product-2.jpg" alt="" />
-                            </td>
-                            <td class="si-text">
-                              <div class="product-selected">
-                                <p>$60.00 x 1</p>
-                                <h6>Kabino Bedside Table</h6>
-                              </div>
-                            </td>
-                            <td class="si-close">
-                              <i class="ti-close"></i>
+                            <td class="text-center">
+                              No product yet. Go Shopping!
                             </td>
                           </tr>
                         </tbody>
@@ -70,7 +73,7 @@
                     </div>
                     <div class="select-total">
                       <span>total:</span>
-                      <h5>$120.00</h5>
+                      <h5>${{totalPrice}}.00</h5>
                     </div>
                     <div class="select-button">
                       <router-link to="/cart" class="primary-btn view-card">
@@ -93,5 +96,40 @@
 <script>
 export default {
   name: "MainHeader",
+  data() {
+    return {
+      cartProduct: [],
+    };
+  },
+  methods: {
+    removeItem(index) {
+      this.cartProduct.splice(index, 1);
+      const parsed = JSON.stringify(this.cartProduct);
+      localStorage.setItem("cartProduct", parsed);
+    },
+  },
+  mounted() {
+    if (localStorage.getItem("cartProduct")) {
+      try {
+        this.cartProduct = JSON.parse(localStorage.getItem("cartProduct"));
+      } catch (e) {
+        localStorage.removeItem("cartProduct");
+      }
+    }
+  },
+  computed: {
+    totalPrice() {
+      return this.cartProduct.reduce(function (items, data) {
+        return items + data.price;
+      }, 0);
+    },
+  },
 };
 </script>
+
+<style scoped>
+.photo-item {
+  width: 80px;
+  height: 80px;
+}
+</style>
